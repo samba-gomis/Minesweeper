@@ -6,7 +6,7 @@ class GameSquare:
         self.is_flag=False
         self.is_mine=False
         self.is_revealed=False
-        self.mine=0
+        self.mine_around=0
 
     def change_to_flag(self):
         if not self.is_revealed:
