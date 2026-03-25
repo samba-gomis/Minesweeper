@@ -1,5 +1,4 @@
 from GameSquare import GameSquare
-import random
 
 class GameBoard:
     def __init__(self,line,column):
