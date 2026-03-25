@@ -1,4 +1,5 @@
 from GameSquare import GameSquare
+import random
 
 class GameBoard:
     def __init__(self,line,column):
@@ -13,13 +14,24 @@ class GameBoard:
                 new_case=GameSquare(x,y)
         actual_line.append(new_case)
         self.grid_board.append(actual_line)
-        print(self.grid_board)        
+        print(self.grid_board)      
+
+    def generate_mines(self, mines_total):
+        mine_placed=0
+        while mine_placed<mines_total:
+            x_aleatory=random.randint(0,self.column-1)
+            y_aleatory=random.randint(0,self.line-1)
+            target_case=self.grid_board[y_aleatory, x_aleatory]
+            if target_case.is_mine:
+                target_case.place_mine()
+                mine_placed+=1
 
     def flood_fill(self, x, y):
         if self.squares.is_mine or self.squares.is_flag:
             return
-        self.flood_fill(x-1,y)
-        self.flood_fill(x+1,y)
-        self.flood_fill(x,y-1)
-        self.flood_fill(x,y+1)
+        if self.square.is_revealed:
+         self.flood_fill(x-1,y)
+         self.flood_fill(x+1,y)
+         self.flood_fill(x,y-1)
+         self.flood_fill(x,y+1)
 
