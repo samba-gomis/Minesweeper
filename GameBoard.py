@@ -27,11 +27,20 @@ class GameBoard:
                 mine_placed+=1
 
     def flood_fill(self, x, y):
-        if self.squares.is_mine or self.squares.is_flag:
+       
+        if x<0 or x>=self.column or y<0 or y>=self.line:
             return
-        if self.square.is_revealed:
-         self.flood_fill(x-1,y)
-         self.flood_fill(x+1,y)
-         self.flood_fill(x,y-1)
-         self.flood_fill(x,y+1)
+        
+        target_case=self.grid_board[y,x]
+        if target_case.is_mine or target_case.is_flag or target_case.is_revealed or target_case.is_point:
+            return
+        
+        target_case.reveal()
+        if target_case.mine_around>0:
+            return
+        
+        self.flood_fill(x-1,y)
+        self.flood_fill(x+1,y)
+        self.flood_fill(x,y-1)
+        self.flood_fill(x,y+1)
 

@@ -5,12 +5,18 @@ class GameSquare:
         self.y=y_position
         self.is_flag=False
         self.is_mine=False
+        self.is_interrogation=False
         self.is_revealed=False
         self.mine_around=0
 
     def change_to_flag(self):
         if not self.is_revealed:
             self.is_flag=not self.is_flag
+
+    def change_to_point(self):
+        if not self.is_revealed:
+            self.is_interrogation=not self.is_interrogation
+
     
     def reveal(self):
         if not self.is_flag:
