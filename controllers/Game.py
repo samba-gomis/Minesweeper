@@ -1,12 +1,12 @@
-from GameBoard import GameBoard
+from controllers.GameBoard import GameBoard
 
 class Game:
     #Create the game and the board
-    def __init__(self,rows,column,window):
+    def __init__(self,rows,cols,window):
         self.rows=rows
-        self.column=column
+        self.column=cols
         self.window=window
-        self.board=GameBoard(rows,column)
+        self.board=GameBoard(rows,cols)
 
     #Check if the player won the game
     def check_victory(self):
