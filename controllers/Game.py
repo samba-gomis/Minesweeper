@@ -4,7 +4,7 @@ class Game:
     #Create the game and the board
     def __init__(self,rows,cols,window):
         self.rows=rows
-        self.column=cols
+        self.cols=cols
         self.window=window
         self.board=GameBoard(rows,cols)
 
