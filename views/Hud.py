@@ -25,7 +25,7 @@ class Hud(tk.Frame):
         self.reset_btn.pack(side=tk.LEFT, expand=True)
 
         # Timer
-        self.timer_var = tk.StringVar(value="⏱ 000")
+        self.timer_var = tk.StringVar(value=" 000")
         self.timer_label = tk.Label(self, textvariable=self.timer_var,
                                     bg="#313244", fg="#a6e3a1",
                                     font=("Courier", 16, "bold"))
@@ -37,7 +37,7 @@ class Hud(tk.Frame):
 
     def update_timer(self, seconds: int):
         """Updates the timer display"""
-        self.timer_var.set(f"⏱ {min(seconds, 999):03d}")
+        self.timer_var.set(f" {min(seconds, 999):03d}")
 
     def show_result(self, won: bool):
         """Changes the reset button emoji based on the game result"""

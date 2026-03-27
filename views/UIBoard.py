@@ -10,7 +10,7 @@ class UIBoard(tk.Frame):
     """
 
     def __init__(self, parent, window):
-        super().__init__(parent, bg=COLOR_BG)
+        super().__init__(parent, bg=DEEP_BLUE)
         self.window = window
 
         rows = window.difficulty.rows
@@ -18,52 +18,57 @@ class UIBoard(tk.Frame):
 
         self.game = Game(rows, cols, window)
         self._first_click = True
+        self._game_over = False
 
-        width = cols * CELL_SIZE
-        height = rows * CELL_SIZE
-        self.canvas = tk.Canvas(self, width=width, height=height,
-                                bg=COLOR_CELL, highlightthickness=0)
+        self.canvas = tk.Canvas(self, width=cols * WIDTH, height=rows * HEIGHT,
+                                bg=BLACK, highlightthickness=0)
         self.canvas.pack()
 
         self.canvas.bind("<Button-1>", self._on_left_click)
         self.canvas.bind("<Button-3>", self._on_right_click)
+    def reveal_all_bombs(self):
+        for row in range(self.game.board.rows):
+            for col in range(self.game.board.cols):
+                cell = self.game.board.get_cell(row, col)
+                if cell.is_mine:
+                    cell.is_revealed = True
+        self._draw_board()
 
         self._draw_board()
 
     def _draw_board(self):
-        """Redraws all cells on the board."""
+        """Redraws all cells on the board"""
         self.canvas.delete("all")
         for row in range(self.game.board.rows):
             for col in range(self.game.board.cols):
                 self._draw_cell(row, col)
 
     def _draw_cell(self, row: int, col: int):
-        """Draws a single cell based on its current state."""
+        """Draws a single cell based on its current state"""
         cell = self.game.board.get_cell(row, col)
-        x1 = col * CELL_SIZE
-        y1 = row * CELL_SIZE
-        x2 = x1 + CELL_SIZE
-        y2 = y1 + CELL_SIZE
-        cx = x1 + CELL_SIZE // 2
-        cy = y1 + CELL_SIZE // 2
+        x1 = col * WIDTH
+        y1 = row * HEIGHT
+        x2 = x1 + WIDTH
+        y2 = y1 + HEIGHT
+        cx = x1 + WIDTH // 2
+        cy = y1 + HEIGHT // 2
 
         tag = f"cell_{row}_{col}"
         self.canvas.delete(tag)
 
         if not cell.is_revealed:
             self.canvas.create_rectangle(x1, y1, x2, y2,
-                                         fill=COLOR_CELL, outline=COLOR_BORDER,
+                                         fill="#585b70", outline=BLACK,
                                          width=1, tags=tag)
-            if cell.state == CellState.FLAGGED:
+            if hasattr(cell, 'is_flag') and cell.is_flag:
                 self.canvas.create_text(cx, cy, text="🚩",
                                         font=("Arial", 14), tags=tag)
-            elif cell.state == CellState.QUESTIONED:
+            elif hasattr(cell, 'is_interrogation') and cell.is_interrogation:
                 self.canvas.create_text(cx, cy, text="❓",
                                         font=("Arial", 14), tags=tag)
         else:
             self.canvas.create_rectangle(x1, y1, x2, y2,
-                                         fill=COLOR_CELL_REVEALED,
-                                         outline=COLOR_BORDER_REVEALED,
+                                         fill=BLACK, outline="#45475a",
                                          width=1, tags=tag)
             if cell.is_mine:
                 self.canvas.create_text(cx, cy, text="💣",
@@ -76,12 +81,14 @@ class UIBoard(tk.Frame):
 
     def _get_cell_pos(self, event):
         """Returns (row, col) from event coordinates"""
-        col = event.x // CELL_SIZE
-        row = event.y // CELL_SIZE
+        col = event.x // WIDTH
+        row = event.y // HEIGHT
         return row, col
 
     def _on_left_click(self, event):
         """Reveals the clicked cell"""
+        if self._game_over:
+            return
         row, col = self._get_cell_pos(event)
         if not self.game.board.is_valid(row, col):
             return
@@ -96,6 +103,8 @@ class UIBoard(tk.Frame):
 
     def _on_right_click(self, event):
         """Cycles through: flag, question mark, unknown"""
+        if self._game_over:
+            return
         row, col = self._get_cell_pos(event)
         if not self.game.board.is_valid(row, col):
             return
@@ -107,6 +116,7 @@ class UIBoard(tk.Frame):
     def reset(self):
         """Creates a new game on the same board"""
         self._first_click = True
+        self._game_over = False
         rows = self.window.difficulty.rows
         cols = self.window.difficulty.cols
         self.game = Game(rows, cols, self.window)

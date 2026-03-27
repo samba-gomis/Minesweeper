@@ -2,7 +2,7 @@ import tkinter as tk
 from views.Hud import Hud
 from views.UIBoard import UIBoard
 from controllers.Timer import Timer
-from config.Difficulty import Difficulty, DifficultyLevel
+from config.Difficulty import Difficulty
 
 
 class Window(tk.Tk):
@@ -18,7 +18,7 @@ class Window(tk.Tk):
         self.resizable(False, False)
         self.configure(bg="#1e1e2e")
 
-        self.difficulty = Difficulty(DifficultyLevel.INTERMEDIATE)
+        self.difficulty = Difficulty("EXPERT")
         self.timer = Timer(self)
 
         self._build_menu()
@@ -42,11 +42,11 @@ class Window(tk.Tk):
         diff_menu = tk.Menu(menubar, tearoff=0, bg="#313244", fg="#cdd6f4",
                             activebackground="#45475a", activeforeground="#cdd6f4")
         diff_menu.add_command(label="Easy (9x9)",
-                              command=lambda: self._change_difficulty(DifficultyLevel.EASY))
+                      command=lambda: self._change_difficulty("EASY"))
         diff_menu.add_command(label="Intermediate (16x16)",
-                              command=lambda: self._change_difficulty(DifficultyLevel.INTERMEDIATE))
+                      command=lambda: self._change_difficulty("INTERMEDIATE"))
         diff_menu.add_command(label="Expert (30x16)",
-                              command=lambda: self._change_difficulty(DifficultyLevel.EXPERT))
+                      command=lambda: self._change_difficulty("EXPERT"))
         menubar.add_cascade(label="Difficulty", menu=diff_menu)
 
         self.config(menu=menubar)
@@ -67,7 +67,7 @@ class Window(tk.Tk):
         self.board.reset()
         self._center_window()
 
-    def _change_difficulty(self, level: DifficultyLevel):
+    def _change_difficulty(self, level):
         self.difficulty = Difficulty(level)
         self.board.destroy()
         self.board = UIBoard(self.main_frame, self)
@@ -82,6 +82,9 @@ class Window(tk.Tk):
         """Called by Game when the game ends"""
         self.timer.stop()
         self.hud.show_result(won)
+        self.board._game_over = True
+        if not won:
+            self.board.reveal_all_bombs()
 
     def _center_window(self):
         w = self.winfo_width()

@@ -1,4 +1,4 @@
-from GameSquare import GameSquare
+from controllers.GameSquare import GameSquare
 import random
 
 class GameBoard:
