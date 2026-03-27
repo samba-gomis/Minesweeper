@@ -1,4 +1,5 @@
 from controllers.GameBoard import GameBoard
+from tkinter import messagebox
 
 class Game:
     #Create the game and the board
@@ -18,6 +19,9 @@ class Game:
                     hidden_cases+=1
         if hidden_cases==self.board.total_mines:
          self.window.on_game_over(True)
+         messagebox.showinfo("Victory!", "Congratulation! You found all the mines!")
+         
+
             
     #Play a turn when clicking left
     def reveal(self,row,col):
@@ -26,6 +30,7 @@ class Game:
         if target_case.is_mine:
             target_case.reveal()
             self.window.on_game_over(False)
+            messagebox.showerror("Game Over!", "Oh no! You clicked on a mine!")
             return
         self.board.flood_fill(col,row)
         self.check_victory()
