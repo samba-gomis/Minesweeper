@@ -39,13 +39,13 @@ BIG_GRID    = (30, 16)
 
 # Bomb count range (min, max) per difficulty
 MIN_BOMB = {
-    "EASY":         7,
+    "EASY":         5,
     "INTERMEDIATE": 30,
     "EXPERT":       70,
 }
 
 MAX_BOMB = {
-    "EASY":         10,
+    "EASY":         8,
     "INTERMEDIATE": 55,
     "EXPERT":       99,
 }
